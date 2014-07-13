@@ -66,6 +66,7 @@ class GroundBlock(Widget, physicalObject):
 
 class DarkforcesGame(Widget):
     player = ObjectProperty(None)
+    enemy = ObjectProperty(None)
     ground = list() 
     camera = [0,0]
 

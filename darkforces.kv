@@ -16,6 +16,7 @@
 
 <DarkforcesGame>:
     player: main_char
+    enemy: main_enemy
 
     canvas:
         Color:
@@ -27,4 +28,8 @@
     Player:
         id: main_char
         center: self.parent.center
+
+    Player:
+        id: main_enemy
+        center: [0, 10]
 
