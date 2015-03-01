@@ -1,4 +1,4 @@
-<Player>
+<Player>:
     size: 50, 50
     canvas:
         Color:
@@ -7,7 +7,8 @@
             pos: self.center
             size: self.size
 
-<GroundBlock>
+<GroundBlock>:
+	size: 64, 64
     canvas:
         Rectangle:
             pos: self.pos
@@ -16,7 +17,6 @@
 
 <DarkforcesGame>:
     player: main_char
-    enemy: main_enemy
 
     canvas:
         Color:
@@ -24,12 +24,7 @@
         Rectangle:
             pos: 0,0
             size: root.width, root.height
-    
+
     Player:
         id: main_char
         center: self.parent.center
-
-    Player:
-        id: main_enemy
-        center: [0, 10]
-

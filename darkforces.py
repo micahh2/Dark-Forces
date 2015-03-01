@@ -6,6 +6,7 @@ from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.graphics import Rectangle
 from random import randint
+import simplejson as json
 
 class physicalObject:
     velocity_x= NumericProperty(0)
@@ -24,7 +25,8 @@ class Player(Widget, physicalObject):
         self.velocity_x += self.acceleration_x*dt - self.velocity_x*.01
         #friction from the ground
         if self.collisionDir[3] < 1:
-            self.velocity_x -= self.velocity_x*.05 
+            self.velocity_x -= self.velocity_x*.05
+
         if (self.velocity_x < 0 and self.collisionDir[1] == 0) or (self.velocity_x > 0 and self.collisionDir[2] == 0):
             self.velocity_x = 0
 
@@ -38,11 +40,11 @@ class GroundBlock(Widget, physicalObject):
     def __init__(self, pos_x, pos_y, **kwargs):
         super(GroundBlock, self).__init__(**kwargs)
         with self.canvas:
-            self.pos = pos_x, pos_y 
+            self.pos = pos_x, pos_y
             self.rect_bg = Rectangle(pos=self.pos, size=self.size)
 
     def checkCollision(self, widgetAndphyObj):
-        horz =  self.pos[0] - widgetAndphyObj.pos[0]  
+        horz =  self.pos[0] - widgetAndphyObj.pos[0]
         vert =  self.pos[1] - widgetAndphyObj.pos[1]
         #      Left  Right Up    Down
         col = [False,False,False,False]
@@ -58,7 +60,7 @@ class GroundBlock(Widget, physicalObject):
 
 
         if col[0] and col[1]:
-            widgetAndphyObj.collisionDir[3] = 0 
+            widgetAndphyObj.collisionDir[3] = 0
 
     def move(self, camera):
         self.pos = Vector([self.pos[0] - camera[0], self.pos[1] - camera[1]])
@@ -66,10 +68,10 @@ class GroundBlock(Widget, physicalObject):
 
 class DarkforcesGame(Widget):
     player = ObjectProperty(None)
-    enemy = ObjectProperty(None)
-    ground = list() 
+    #enemy = ObjectProperty(None)
+    ground = list()
     camera = [0,0]
-
+    canvas = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(DarkforcesGame, self).__init__(**kwargs)
@@ -102,17 +104,16 @@ class DarkforcesGame(Widget):
     def update(self, dt):
         self.player.collisionDir = [1,1,1,1]
         self.camera = self.player.position
-        
         for i in self.ground:
             i.checkCollision(self.player)
             i.move(self.camera)
-        self.player.move(dt) 
+        self.player.move(dt)
 
     def generateFloor(self):
         for i in range(100):
-            self.ground.append(GroundBlock(i*32,0))
+            self.ground.append(GroundBlock(i*66,0))
             self.add_widget(self.ground[i])
-    
+
 class DarkforcesApp(App):
     def build(self):
         game = DarkforcesGame()
@@ -120,5 +121,7 @@ class DarkforcesApp(App):
         return game
 
 if __name__ == '__main__':
-    DarkforcesApp().run()
-
+    thegame = DarkforcesApp()
+    thegame.run()
+    with open('groundout.json', 'w') as f:
+        f.write(json.dumps(thegame.root.ground))
